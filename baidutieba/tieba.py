@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+#爬取百度贴吧指定的帖子内容写入文件，可指定只看楼主。 
 import urllib
 import urllib.request
 import urllib.error
