@@ -1,3 +1,4 @@
+#爬取豆瓣Top250共10页 的电影标题 （通过找到下页的链接并访问）
 import requests
 from bs4 import BeautifulSoup
 movie_name_list = []
