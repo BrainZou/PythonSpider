@@ -94,7 +94,7 @@ def keeplive():
         #心跳信息
         msg = 'type@=keeplive/tick@=' + str(int(time.time())) + '/\0'
         sendmsg(msg)
-        #print("❥❥❥心跳，不然就被杀死了~~❥❥❥")
+        #print("❥❥❥心跳，不然就死了~~❥❥❥")
         time.sleep(30)
 
 
