@@ -25,10 +25,9 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #client.connect 连接到address处的socket，一般，address的格式为元组（hostname,port）,如果连接出错，返回socket,error错误
 #client.connect_ex(address) 同上的client.connect只不过会有返回值，连接成功时返回0，连接失败时返回编码
+
 client.connect((host, port))
-
-
-danmu = re.compile(b'txt@=(.+?)/cid@')
+danmu = re.compile(b'nn@=(.+?)/txt@=(.+?)/cid@')
 
 def sendmsg(msgstr):
     msg = msgstr.encode('utf-8')
@@ -57,39 +56,45 @@ def sendmsg(msgstr):
     client.sendall(msg[0:])
 
 def start(roomid):
-    #登陆请求信息 房间id
-    msg = 'type@=loginreq/roomid@={}/\0'.format(roomid)
-    sendmsg(msg)
-    #入组信息 -9999代表海量弹幕模式
-    msg_more = 'type@=joingroup/rid@={}/gid@=-9999/\0'.format(roomid)
-    sendmsg(msg_more)
-
-    print('---------------欢迎连接到{}的直播间---------------'.format(get_name(roomid)))
     while True:
-        # client.recv(bufsize[,flag])
-        # 接收socket的数据，数据以字符串形式返回，bufsize指定最多可以接收的数量，flag提供有关消息的其他信息，通常可以忽略
-        data = client.recv(1024)
-        danmu_more = danmu.findall(data)
-        if not data:
-            print("===========================客户端已经断开正在尝试重新连接=================================")
-            multiprocessing.Process(target=start, args=(roomid,)).start()
-        else:
-            for i in range(0, len(danmu_more)):
-                with open('danmu_1.txt', 'a') as fo:
-                    try:
-                        print(danmu_more[i].decode(encoding='utf-8'))
-                        txt = danmu_more[i].decode(encoding='utf-8') + '\n'
-                        fo.writelines(txt)
-                    except:
-                        print('-----------------出错了------------------------')
+        #登陆请求信息 房间id
+        msg = 'type@=loginreq/roomid@={}/\0'.format(roomid)
+        sendmsg(msg)
+        #入组信息 -9999代表海量弹幕模式
+        msg_more = 'type@=joingroup/rid@={}/gid@=-9999/\0'.format(roomid)
+        sendmsg(msg_more)
 
+        print('===========================欢迎来到{}的直播间================================='.format(get_name(roomid)))
+        while True:
+            global client
+            # client.recv(bufsize[,flag])
+            # 接收socket的数据，数据以字符串形式返回，bufsize指定最多可以接收的数量，flag提供有关消息的其他信息，通常可以忽略
+            data = client.recv(1024)
+            #print(data)
+            danmu_more = danmu.findall(data)
+            if not data:
+                print("===========================客户端已经断开正在尝试重新连接=================================")
+                client.close()
+                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client.connect((host, port))
+                break
+            else:
+                for i in range(0, len(danmu_more)):
+                    #with open('danmu_1.txt', 'a') as fo:
+                        try:
+                            print(danmu_more[i][0].decode(encoding='utf-8')+":"+danmu_more[i][1].decode(encoding='utf-8'))
+                            #txt = danmu_more[i].decode(encoding='utf-8') + '\n'
+                            #fo.writelines(txt)
+                        except:
+                            pass
+                            #print('===========================出错了=================================')
 
 def keeplive():
     while True:
         #心跳信息
         msg = 'type@=keeplive/tick@=' + str(int(time.time())) + '/\0'
         sendmsg(msg)
-        print("❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥")
+        #print("❥❥❥心跳，不然就被杀死了~~❥❥❥")
         time.sleep(30)
 
 
@@ -101,8 +106,8 @@ def get_name(roomid):
 
 if __name__ == '__main__':
     room_id = input('请输入房间ID： ')
-    #606118 453751
+    #606118 453751 2227593
     p1 = multiprocessing.Process(target=start, args=(room_id,))
-    p2 = multiprocessing.Process(target=keeplive)
     p1.start()
+    p2 = multiprocessing.Process(target=keeplive)
     p2.start()
