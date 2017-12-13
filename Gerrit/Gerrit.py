@@ -22,6 +22,7 @@ def requesst(url,limit_time):
     }
     data = requests.get(url, headers=headers).text
     # content = data.text #你要的数据,JSON格式的
+    #去掉多余的几个垃圾字符
     remove = re.compile('\)\]\}\'')
     # data = data.replace(')]}\'',"")
     data = re.sub(remove, "", data)
@@ -107,9 +108,10 @@ def main():
     with open("gerrit.csv", "w",newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["project", "branch", "subject", "owner", "updated"])
+    # 循环爬下一页
     while (continue_flag):
         continue_flag, url = requesst(url,limit_time)
-    #可视化
+    #处理数据并可视化
     view_format_count(subject_format_count())
 
 if __name__ == '__main__':
