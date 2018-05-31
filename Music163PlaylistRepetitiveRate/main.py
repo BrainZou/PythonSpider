@@ -33,7 +33,7 @@ class index:
             print(form.render())
             return render.formtest(form)
         else:
-	    print "asda"
+	    print "begin"
 	    playlist1=Music163RepetitiveRate.get_playlist_by_name(form.d.fname)
 	    print playlist1
             playlist2=Music163RepetitiveRate.get_playlist_by_name(form.d.sname)
