@@ -1,0 +1,24 @@
+$def with (form)  
+<div class="center">  
+<form name="main" method="post">   
+$if not form.valid: <p class="error">请重试!</p>  
+$:form.render() 
+<input class="input"type="submit" />
+</form>
+<a>提交后,大概需要20s来取歌单数据和分析,请耐心等待!</a>
+<div>
+<style>
+.center {
+            width:500px;
+            height: 500px;
+            position: absolute;
+            left:50%;
+            top:50%;
+            margin-left:-100px;
+            margin-top:-100px;
+}
+.input{
+        width:100px;
+        margin-left:100px;
+}
+</style>  
