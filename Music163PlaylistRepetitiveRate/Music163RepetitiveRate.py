@@ -73,8 +73,8 @@ def repetitive_rate_by_playlistlink(link1,link2):
     myset2 = set(lists2)
     pattern = re.compile('\Wu\'')
     intersectionset = re.sub(pattern,'<br>\'',str(myset1 & myset2))
-    length = len(myset1 | myset2)
+    length = len(myset1 | myset2)+len(myset1 & myset2)
     print intersectionset
-    return(u"你们的歌单重合率为:%f%%<br><br>重复歌曲共%d首如下:%s"%(len(myset1 & myset2)*100/length,len(myset1&myset2),intersectionset.decode('unicode-escape')))
+    return(u"你们的歌单重合率为:%f%%<br><br>重复歌曲共%d首如下:%s"%(len(myset1 & myset2)*200/length,len(myset1&myset2),intersectionset.decode('unicode-escape')))
 #if __name__ == '__main__':
 #    sys.exit(repetitive_rate_by_playlistlink(get_playlist_by_name(sys.argv[1]),get_playlist_by_name(sys.argv[2])))
